@@ -1,49 +1,84 @@
-import java.util.Random;
-import java.awt.event.KeyEvent;
-import java.util.Scanner;
-
-import edu.princeton.cs.introcs.StdDraw;
-
 public class Player {
 	private String name;
 	private int TreasureCount;
 	private int playerNumber;
+	private int playerNumberCave;
+	private int playerNumberLevel;
 
 	public Player(int playerNumber) {
 		super();
 		this.playerNumber = playerNumber;
+		this.playerNumberCave = 0;
+		this.playerNumberLevel = 0;
+		this.TreasureCount = 0;
 	}
-
-	public Player(String name, int treasureCount) {
-		super();
-		this.name = name;
-		TreasureCount = treasureCount;
-	}
-
 	public Player(String name) {
 		super();
 		this.name = name;
 	}
+	
+	
 
+
+	public String getName() {
+		return name;
+	}
+	public int getTreasureCount() {
+		return TreasureCount;
+	}
+	public int getPlayerNumber() {
+		return playerNumber;
+	}
+	public int getPlayerNumberCave() {
+		return playerNumberCave;
+	}
+	public int getPlayerNumberLevel() {
+		return playerNumberLevel;
+	}
+
+	
+	
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	public void setTreasureCount(int treasureCount) {
+		TreasureCount = treasureCount;
+	}
+	public void setPlayerNumber(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
+	public void setPlayerNumberCave(int playerNumberCave) {
+		this.playerNumberCave = playerNumberCave;
+	}
+	public void setPlayerNumberLevel(int playerNumberLevel) {
+		this.playerNumberLevel = playerNumberLevel;
+	}
+	
+	
+	
+	
+	
+	
+	
 	public void getNextMove(Game game) {
-		Scanner sc = new Scanner(System.in);
 		boolean roundFinished = false;
-		
-			if (getPlayerCave(game) == 0) {
-				System.out.print("Vous êtes à la surface, vous plongez.");
+		while (roundFinished != true) {
+			if (playerNumberCave == 0) {
+				System.out.println("Vous êtes à la surface, vous plongez.");
 				// moveDown
 				moveDown(game);
 				roundFinished = true;
-			} else if (getPlayerPositon(game)[0] == game.getNbCave()
-					&& getPlayerPositon(game)[1] == game.getCaveNbLevel(game.getNbCave())) {
-				if (game.chestTestPosition(getPlayerPositon(game))) {
+			} else if (playerNumberCave == game.getNbCave()
+					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())) {
+				if (game.chestTestPosition(playerNumberCave,playerNumberLevel)) {
 					// moveUp
 					// openChest
 				} else {
 					// moveUp
 				}
 			} else {
-				if (game.chestTestPosition(getPlayerPositon(game))) {
+				if (game.chestTestPosition(playerNumberCave,playerNumberLevel)) {
 					// moveDown
 					// moveUp
 					// openChest
@@ -51,103 +86,57 @@ public class Player {
 					// moveDown
 					// moveUp
 				}
-			
-		}
-	}
-
-	public void setPlayerPosition(int caveNumber, int levelNumber, Game game) {
-		game.getCaveLevel(caveNumber, levelNumber).Players.add(this);
-	}
-
-	public void deletPlayerPosition(int caveNumber, int levelNumber,Game game) {
-		game.getCaveLevel(caveNumber, levelNumber).Players.remove(this);
-	}
-
-	public void moveDown(Game game) {
-		if (getPlayerPositon(game)[1] == game.getCaveNbLevel(getPlayerPositon(game)[0])) {
-			int newPosCave = getPlayerPositon(game)[0]+ 1;
-			setPlayerPosition(newPosCave, 0,game);
-			System.out.println("Le joueur "+ playerNumber + " se déplace dans la cave "+ newPosCave+", niveau "+ 0 +".");
-		} else {
-			int newPosLevel = getPlayerPositon(game)[1] +1;
-			setPlayerPosition(getPlayerPositon(game)[0], newPosLevel,game);
-			System.out.println("Le joueur "+ playerNumber + " se déplace dans la cave "+ getPlayerPositon(game)[0]+", niveau "+ newPosLevel +".");
-		}
-		deletPlayerPosition(getPlayerPositon(game)[0], getPlayerPositon(game)[1],game);
-	}
-
-	public void moveUp(Game game) {
-		if (getPlayerPositon(game)[1] == 0) {
-			setPlayerPosition(getPlayerPositon(game)[0]--, game.getCaveNbLevel(getPlayerPositon(game)[0]--),game);
-		} else {
-			setPlayerPosition(getPlayerPositon(game)[0], getPlayerPositon(game)[1]++,game);
-		}
-		deletPlayerPosition(getPlayerPositon(game)[0], getPlayerPositon(game)[1],game);
-	}
-
-	public int getPlayerNumber() {
-		return playerNumber;
-	}
-
-	public void setPlayerNumber(int playerNumber) {
-		this.playerNumber = playerNumber;
-	}
-
-	public boolean playerTestPosition(int caveNumber, int levelNumber, Game game) {
-		if (game.getCaveLevel(caveNumber, levelNumber).playerTestLevel(this)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public int[] getPlayerPositon(Game game) {
-		int[] pos = new int[2];
-		if (game.playerTestGame(this) == false) {
-			System.out.println("error : Le joueur " + playerNumber + " n'est pas présent dans le jeu.");
-			return pos;
-		} else {
-			pos[0] = getPlayerCave(game);
-			pos[1] = getPlayerLevel(game, getPlayerCave(game));
-			return pos;
-		}
-	}
-
-	public int getPlayerCave(Game game) {
-		for (int i = 0; i < game.getCaves().length; i++) {
-			if (game.getCave(i).playerTestCave(this)) {
-				return game.getCave(i).caveNumber;
 			}
 		}
-		return 0;
-
 	}
-
-	public int getPlayerLevel(Game game, int caveNumber) {
-		for (int k = 0; k < game.getCaveNbLevel(caveNumber); k++) {
-			if (game.getCaveLevel(caveNumber, k).playerTestLevel(this)) {
-				return game.getCaveLevel(caveNumber, k).levelNumber;
-			}
+	
+	public void moveDown (Game game) {
+		if (playerNumberCave == playerNumberLevel) {
+			playerNumberCave++;
+			playerNumberLevel = 0;
+		} else {
+			playerNumberLevel++;
 		}
-		return 0;
 	}
-
-	public void playerPositionPrint(Game game) {
+	public void moveUp (Game game) {
+		if (playerNumberLevel == 0) {
+			playerNumberCave--;
+			playerNumberLevel = game.getCaveNbLevel(playerNumberCave);
+		} else {
+			playerNumberLevel--;
+		}
+	}
+	
+	
+	
+	
+	
+	public void playerPrint() {
 		int playerNumberPrint = playerNumber + 1;
-		if (game.playerTestGame(this) == false) {
-			System.out.println("error : Le joueur " + playerNumberPrint + " n'est pas présent dans le jeu.");
+		if (playerNumberCave == 0 && playerNumberLevel == 0) {
+			System.out.println("Le joueur "+ playerNumberPrint +" se trouve à la surface." );
 		} else {
-			for (int i = 0; i < game.getCaves().length; i++) {
-				if (game.getCave(i).playerTestCave(this)) {
-					System.out.print("Le joueur " + playerNumberPrint + " se trouve dans la cave "
-							+ game.getCave(i).caveNumber + ",");
-					for (int k = 0; k < game.getCaveNbLevel(i); k++) {
-						if (game.getCaveLevel(i, k).playerTestLevel(this)) {
-							System.out.println(" niveau " + game.getCaveLevel(i, k).levelNumber + ".");
-						}
-					}
-				}
-			}
+			System.out.println("Le joueur "+ playerNumberPrint +" se trouve dans le niveau "+ playerNumberLevel +" de la cave "+ playerNumberCave +".");
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
