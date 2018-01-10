@@ -1,43 +1,22 @@
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class Level {
-	public ArrayList<Player>Players;
-	public ArrayList<Chest>Chests;
+	public ArrayList<Chest> Chests;
 	public int levelNumber;
-	
-	public Level(int levelNumber, int  nbChests) {
+
+	public Level(int levelNumber, int nbChests) {
 		super();
 		this.levelNumber = levelNumber;
-		Players = new ArrayList<>();
 		Chests = new ArrayList<>();
 		for (int i = 0; i < nbChests; i++) {
 			Chests.add(new Chest());
 		}
 	}
-	
-	public Level(int  nbPlayers) {
-		super();
-		this.levelNumber = 0;
-		Players = new ArrayList<>();
-		Chests = new ArrayList<>();
-		for (int i = 0; i < nbPlayers; i++) {
-			Players.add(new Player(i));
-		}
-	}
-	
+
 	public void addChest() {
 		this.Chests = new ArrayList<>();
 		this.Chests.add(new Chest());
-	}
-
-	public List<Player> getPlayers() {
-		return Players;
-	}
-
-	public void setPlayers(ArrayList<Player> players) {
-		Players = players;
 	}
 
 	public List<Chest> getChests() {
@@ -48,47 +27,24 @@ public class Level {
 		Chests = chests;
 	}
 
-	public Level() {
-		// TODO Auto-generated constructor stub
-	}
-	public boolean playerTestLevel (Player player) {
-		for (int i=0; i<Players.size();i++) {
-			if (player.getPlayerNumber() == Players.get(i).getPlayerNumber()) {
-				return true;
-			}
+	public boolean playerTestLevel(Player player) {
+		if (player.getPlayerNumberLevel() == levelNumber) {
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
-	public boolean chestTestLevel () {
+
+	public boolean chestTestLevel() {
 		if (Chests.isEmpty()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	public int [] levelPrint () {
-		int [] levelDes = new int [2];
-		if (Chests.isEmpty() && Players.isEmpty()) {
-			//System.out.println("Il n'y a pas de coffres et de joueurs dans le niveau " +levelNumber);
-			levelDes[0]= 0;
-			levelDes[1]= 0;
-			return levelDes;
-		} else if (Chests.isEmpty() && Players.isEmpty()== false) {
-			//System.out.println("Il y a "+ Players.size()+ " joueurs mais aucun coffres dans le niveau "+ levelNumber);
-			levelDes[0]= Players.size();
-			levelDes[1]= 0;
-			return levelDes;
-		}else if (Chests.isEmpty() == false && Players.isEmpty()) {
-			//System.out.println("Il y a "+ Chests.size()+ " coffres mais aucun joueurs dans le niveau "+ levelNumber);
-			levelDes[0]= 0;
-			levelDes[1]= Chests.size();
-			return levelDes;
-		} else {
-			//System.out.println("Il y a "+ Players.size()+ " et "+ Chests.size()+ " coffres joueurs dans le niveau "+ levelNumber);
-			levelDes[0]= Players.size();
-			levelDes[1]= Chests.size();
-			return levelDes;
-		}
+
+	public int ChestsSizelevel() {
+		return Chests.size();
 	}
 
 }
