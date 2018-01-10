@@ -1,0 +1,150 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Cave {
+	private int level;
+	private ArrayList<Level> Levels;
+	public int caveNumber;
+
+	public Cave(int caveNumber, int nbPlayers) {
+		super();
+		this.caveNumber = caveNumber;
+		switch (caveNumber) {
+		case 0:
+			this.level = 1;
+			break;
+		case 1:
+			this.level = (int) (Math.random() * 4 + 9);
+			break;
+		case 2:
+			this.level = (int) (Math.random() * 4 + 6);
+			break;
+		case 3:
+			this.level = (int) (Math.random() * 4 + 3);
+			break;
+		}
+		Levels = new ArrayList<>();
+		if (caveNumber == 0) {
+			Levels.add(new Level(nbPlayers));
+		} else {
+			int randomLevelNumber = (int) (Math.random() * this.level);
+			for (int k = 0; k < level; k++) {
+				if (k == randomLevelNumber) {
+					Levels.add(new Level(k, 1));
+				} else {
+					Levels.add(new Level(k, 0));
+				}
+			}
+		}
+	}
+
+	public Cave(int level, ArrayList<Level> levels) {
+		super();
+		this.level = level;
+		Levels = levels;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public List<Level> getLevels() {
+		return Levels;
+	}
+
+	public void setLevels(ArrayList<Level> levels) {
+		Levels = levels;
+	}
+	public boolean playerTestCave (Player player) {
+		for (int i=0; i<Levels.size();i++) {
+			if (Levels.get(i).playerTestLevel(player) == true) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int getCaveNumber() {
+		return caveNumber;
+	}
+
+	public void setCaveNumber(int caveNumber) {
+		this.caveNumber = caveNumber;
+	}
+
+	public void printCave() {
+		if (caveNumber == 0) {
+			System.out.println("Il y a "+ Levels.get(0).levelPrint()[0]+" joueurs à la surface.");
+		} else {
+			System.out.println("La cave " + caveNumber + " a " + level + " niveaux.");
+			int nbPlayersCave = 0;
+			int nbChestsCave = 0;
+			ArrayList<Integer> PlayersCaveNumber = new ArrayList<>();
+			ArrayList<Integer> ChestsCaveNumber = new ArrayList<>();
+			/*
+			 * for (int i=0; i< level; i++) { Levels.get(i).levelPrint(); }
+			 */
+			for (int i = 0; i < level; i++) {
+				int nbPlayersLevel = Levels.get(i).levelPrint()[0];
+				int nbChestsLevel = Levels.get(i).levelPrint()[1];
+				nbPlayersCave = nbPlayersCave + nbPlayersLevel;
+				nbChestsCave = nbChestsCave + nbChestsLevel;
+				if (nbPlayersLevel > 0) {
+					PlayersCaveNumber.add(i);
+				}
+				if (nbChestsLevel > 0) {
+					ChestsCaveNumber.add(i);
+				}
+			}
+			if (nbPlayersCave == 0 && nbChestsCave == 0) {
+				System.out.println("Il n'y a pas de coffres et de joueurs dans la cave " + caveNumber + ".");
+			} else if (nbPlayersCave > 0 && nbChestsCave == 0) {
+				System.out.println("Il n'y a pas de coffres dans la cave " + caveNumber + ".");
+				if (nbPlayersCave == 1) {
+					System.out.println("Il y a 1 joueur dans la cave " + caveNumber + ".");
+					System.out.print("Il se trouve dans le niveau " + PlayersCaveNumber.get(0) + ".");
+				} else {
+					System.out.println("Il y a " + nbPlayersCave + " joueurs dans la cave " + caveNumber + ".");
+					System.out.print("Ils se trouvent dans les niveaux ");
+					for (int i = 0; i < PlayersCaveNumber.size(); i++) {
+						System.out.print(PlayersCaveNumber.get(i) + ", ");
+					}
+					System.out.println(".");
+				}
+			} else if (nbPlayersCave == 0 && nbChestsCave > 0) {
+				System.out.println("Il n'y a pas de joueurs dans la cave " + caveNumber + ".");
+				if (nbChestsCave == 1) {
+					System.out.println("Il y a 1 coffre dans la cave " + caveNumber + ".");
+					System.out.println("Il se trouve dans le niveau " + ChestsCaveNumber.get(0) + ".");
+				} else {
+					System.out.println("Il y a " + nbChestsCave + " coffres dans la cave " + caveNumber + ".");
+					System.out.print("Ils se trouvent dans les niveaux ");
+					for (int i = 0; i < ChestsCaveNumber.size(); i++) {
+						System.out.print(ChestsCaveNumber.get(i) + ", ");
+					}
+					System.out.println(".");
+				}
+			} else {
+				System.out.println("Il y a " + nbPlayersCave + " joueurs dans la cave " + caveNumber + ".");
+				System.out.print("Ils se trouvent dans les niveaux ");
+				for (int i = 0; i < PlayersCaveNumber.size(); i++) {
+					System.out.print(PlayersCaveNumber.get(i) + ", ");
+				}
+				System.out.println(".");
+				System.out.println("Il y a " + nbChestsCave + " coffres dans la cave " + caveNumber + ".");
+				System.out.print("Ils se trouvent dans les niveaux ");
+				for (int i = 0; i < ChestsCaveNumber.size(); i++) {
+					System.out.print(ChestsCaveNumber.get(i) + ", ");
+				}
+				System.out.println(".");
+			}
+
+		}
+	}
+
+}
