@@ -1,97 +1,91 @@
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class Game {
-	private static List<Player> Players;
+	private ArrayList<Player> Players;
 	private int nbPlayers;
 	private Stage CurrentStage;
-	private static Cave [] Caves;
-
+	private static Cave[] Caves;
 
 	public Game(int nbPlayers, int nbCave) {
 		this.nbPlayers = nbPlayers;
-		Caves = new Cave [++nbCave];
-		for (int i=0; i<nbCave ; i++) {
-			Caves[i] = new Cave(i , nbPlayers);
-			Caves[i].printCave();
+		System.out.println("Il y a " + nbPlayers + " joueurs dans le jeu.");
+		Caves = new Cave[++nbCave];
+		Players = new ArrayList<>();
+		for (int i = 0; i < nbPlayers; i++) {
+			Players.add(new Player(i));
+			// Players.get(i).playerPrint();
+		}
+		for (int i = 0; i < nbCave; i++) {
+			Caves[i] = new Cave(i);
+			// Caves[i].printCave();
 		}
 	}
-	
 
+	public ArrayList<Player> getPlayers() {
+		return Players;
+	}
+
+	public Player getPlayer(int playerNumber) {
+		return Players.get(playerNumber);
+	}
+
+	public int getNbPlayers() {
+		return nbPlayers;
+	}
+
+	public int getNbCave() {
+		return Caves.length;
+	}
+
+	public Stage getCurrentStage() {
+		return CurrentStage;
+	}
+
+	public Cave[] getCaves() {
+		return Caves;
+	}
+
+	public static Cave getCave(int i) {
+		return Caves[i];
+	}
+
+	public static int getCaveNbLevel(int i) {
+		return getCave(i).getLevel();
+	}
+
+	public static Level getCaveLevel(int i, int k) {
+		return getCave(i).getLevels().get(k);
+	}
 
 	public static void lauchGame() {
 		int nbPlayers = 2;
 		int nbCave = 3;
-		Game game = new Game(nbPlayers,nbCave);
-		int playerBegin = (int)(Math.random()*nbPlayers);
-		int playerBeginPrint = playerBegin+1;
-		System.out.println("C'est au joueur "+ playerBeginPrint+ " de commencé !");
-		getCaveLevelPlayer(0,0,playerBegin).playerPositionPrint(game);
-		//getCaveLevelPlayer(0,0,playerBegin).getNextMove(game);
-		//getCaveLevelPlayer(0,0,playerBegin).moveDown(game);
-		getCaveLevelPlayer(0,0,playerBegin).setPlayerPosition(1, 0, game);
-		getCaveLevelPlayer(0,0,playerBegin).deletPlayerPosition(0, 0, game);
-		//getCaveLevelPlayer(0,0,playerBegin).playerPositionPrint(game);
-		game.gamePrint(nbCave);
+		Game game = new Game(nbPlayers, nbCave);
+		game.gamePrint();
+		int playerBegin = (int) (Math.random() * nbPlayers);
+		// int playerBegin = 1;
+		int playerBeginPrint = playerBegin + 1;
+		System.out.println("C'est au joueur " + playerBeginPrint + " de commencer !");
+		game.getPlayer(playerBegin).playerPrint();
+		game.getPlayer(playerBegin).getNextMove(game);
+		game.getPlayer(playerBegin).playerPrint();
 	}
-	
-	
-	
-	
-	public int getNbPlayers() {
-		return nbPlayers;
-	}
-	public int getNbCave() {
-		return Caves.length;
-	}
-	public Stage getCurrentStage() {
-		return CurrentStage;
-	}
-	public Cave[] getCaves() {
-		return Caves;
-	}
-	public static Cave getCave(int i) {
-		return Caves[i];
-	}
-	public int getCaveNbLevel (int i) {
-		return getCave(i).getLevel();
-	}
-	public static Level getCaveLevel(int i,int k) {
-		return getCave(i).getLevels().get(k);
-	}
-	public static Player getCaveLevelPlayer (int caveNumber, int levelNumber, int playerNumber) {
-		return getCaveLevel(caveNumber,levelNumber).getPlayers().get(playerNumber);
-	}
-	
-	
-	
-	public boolean playerTestGame (Player player) {
-		for (int i=0; i<Caves.length;i++) {
-			if (Caves[i].playerTestCave(player)== true) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public boolean chestTestPosition(int [] position) {
-		if (this.getCaveLevel(position[0], position[1]).chestTestLevel()) {
+
+	public boolean chestTestPosition(int caveNumber, int levelNumber) {
+		if (this.getCaveLevel(caveNumber, levelNumber).chestTestLevel()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	
-	
-	
-	public void gamePrint(int nbCave) {
-		for (int i=0; i<nbCave; i++) {
+
+	public void gamePrint() {
+		for (int i = 0; i < Players.size(); i++) {
+			Players.get(i).playerPrint();
+		}
+		for (int i = 0; i < Caves.length; i++) {
 			Caves[i].printCave();
 		}
 	}
-	
-}	
 
-
-
+}
