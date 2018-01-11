@@ -71,18 +71,23 @@ public class Player {
 				roundFinished = true;
 			} else if (playerNumberCave == game.getNbCave()
 					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())) {
-				if (game.chestTestPosition(playerNumberCave,playerNumberLevel)) {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println("Vous êtes au fond et il y a un coffre, vous pouvez remonter ou prendre le coffre.");
 					// moveUp
 					// openChest
 				} else {
+					System.out.println("Vous êtes au fond, vous remontez.");
 					// moveUp
+					moveUp(game);
 				}
 			} else {
-				if (game.chestTestPosition(playerNumberCave,playerNumberLevel)) {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println("Il y a un coffre dans ce niveau, vous pouvez remonter, descendre ou prendre le coffre.");
 					// moveDown
 					// moveUp
 					// openChest
 				} else {
+					System.out.println("Ce niveau est vide, vous pouvez remonter ou descendre.");
 					// moveDown
 					// moveUp
 				}
