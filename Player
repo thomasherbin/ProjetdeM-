@@ -93,6 +93,91 @@ public class Player {
 				}
 			}
 		}
+	}public void getNextMove(Game game) {
+		boolean roundFinished = false;
+		while (roundFinished != true) {
+			if (playerNumberCave == 0) {
+				System.out.println("Vous êtes à la surface, vous plongez.");
+				boolean action = false;
+				while (action == false) {
+					if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
+						moveDown(game);
+						action = true;
+					}
+					roundFinished = true;
+				}
+				// moveDown
+
+			} else if (playerNumberCave == game.getNbCave()
+					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())) {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println(
+							"Vous êtes au fond et il y a un coffre, vous pouvez remonter ou prendre le coffre.");
+					boolean action = false;
+					while (action == false) {
+						// moveUp
+						if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+
+						}
+						// openChest
+						else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
+
+							action = true;
+
+						}
+					}
+					roundFinished = true;
+				} else {
+					System.out.println("Vous êtes au fond, vous remontez.");
+
+					// moveUp
+					moveUp(game);
+					roundFinished = true;
+				}
+			} else {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println(
+							"Il y a un coffre dans ce niveau, vous pouvez remonter, descendre ou prendre le coffre.");
+					boolean action = false;
+					while (action == false) {
+						// moveDown
+						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
+							moveDown(game);
+							action = true;
+						}
+						// moveUp
+						else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+						}
+
+						// openChest
+						else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
+
+						}
+					}
+					roundFinished = true;
+				} else {
+					System.out.println("Ce niveau est vide, vous pouvez remonter ou descendre.");
+					boolean action = false;
+					while (action == false) {
+						// moveDown
+						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
+							moveDown(game);
+							action = true;
+						}
+						// moveUp
+						else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+						}
+					}
+					roundFinished = true;
+				}
+			}
+		}
 	}
 	
 	public void moveDown (Game game) {
