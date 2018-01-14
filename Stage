@@ -1,5 +1,43 @@
 
 public class Stage {
 	 private int oxygen;
-	 
+	 private int stageNumber;
+
+
+
+	
+
+	public Stage(int oxygen, int stageNumber) {
+		super();
+		this.oxygen = oxygen;
+		this.stageNumber = stageNumber;
+	}
+
+	public Stage() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getStageNumber() {
+		return stageNumber;
+	}
+	
+	public Stage getStage (int stageNumber) {
+		return this;
+	}
+
+	public int getOxygen() {
+		return oxygen;
+	}
+
+	public void setOxygen(int oxygen) {
+		this.oxygen = oxygen;
+	}
+
+	public void setStageNumber(int stageNumber) {
+		this.stageNumber = stageNumber;
+	}
+	
+	
+
 }
