@@ -1,9 +1,15 @@
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+import edu.princeton.cs.introcs.StdDraw;
+
 public class Player {
 	private String name;
 	private int TreasureCount;
 	private int playerNumber;
 	private int playerNumberCave;
 	private int playerNumberLevel;
+	private ArrayList<Chest> Chests;
 
 	public Player(int playerNumber) {
 		super();
@@ -11,128 +17,85 @@ public class Player {
 		this.playerNumberCave = 0;
 		this.playerNumberLevel = 0;
 		this.TreasureCount = 0;
+		Chests = new ArrayList<>();
 	}
+
 	public Player(String name) {
 		super();
 		this.name = name;
 	}
-	
-	
-
 
 	public String getName() {
 		return name;
 	}
+
+	public int getChestsSize() {
+		return Chests.size();
+	}
+
 	public int getTreasureCount() {
 		return TreasureCount;
 	}
+
 	public int getPlayerNumber() {
 		return playerNumber;
 	}
+
 	public int getPlayerNumberCave() {
 		return playerNumberCave;
 	}
+
 	public int getPlayerNumberLevel() {
 		return playerNumberLevel;
 	}
 
-	
-	
-
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public void setTreasureCount(int treasureCount) {
 		TreasureCount = treasureCount;
 	}
+
 	public void setPlayerNumber(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
+
 	public void setPlayerNumberCave(int playerNumberCave) {
 		this.playerNumberCave = playerNumberCave;
 	}
+
 	public void setPlayerNumberLevel(int playerNumberLevel) {
 		this.playerNumberLevel = playerNumberLevel;
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	public void getNextMove(Game game) {
 		boolean roundFinished = false;
 		while (roundFinished != true) {
 			if (playerNumberCave == 0) {
+				playerScore ();
 				System.out.println("Vous êtes à la surface, vous plongez.");
-				// moveDown
-				moveDown(game);
+				this.moveDown(game);
 				roundFinished = true;
 			} else if (playerNumberCave == game.getNbCave()
-					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())) {
-				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
-					System.out.println("Vous êtes au fond et il y a un coffre, vous pouvez remonter ou prendre le coffre.");
-					// moveUp
-					// openChest
-				} else {
-					System.out.println("Vous êtes au fond, vous remontez.");
-					// moveUp
-					moveUp(game);
-				}
-			} else {
-				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
-					System.out.println("Il y a un coffre dans ce niveau, vous pouvez remonter, descendre ou prendre le coffre.");
-					// moveDown
-					// moveUp
-					// openChest
-				} else {
-					System.out.println("Ce niveau est vide, vous pouvez remonter ou descendre.");
-					// moveDown
-					// moveUp
-				}
-			}
-		}
-	}public void getNextMove(Game game) {
-		boolean roundFinished = false;
-		while (roundFinished != true) {
-			if (playerNumberCave == 0) {
-				System.out.println("Vous êtes à la surface, vous plongez.");
-				boolean action = false;
-				while (action == false) {
-					if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
-						moveDown(game);
-						action = true;
-					}
-					roundFinished = true;
-				}
-				// moveDown
-
-			} else if (playerNumberCave == game.getNbCave()
-					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())) {
+					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave())-1) {
 				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
 					System.out.println(
 							"Vous êtes au fond et il y a un coffre, vous pouvez remonter ou prendre le coffre.");
 					boolean action = false;
 					while (action == false) {
-						// moveUp
 						if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
 							moveUp(game);
 							action = true;
-
 						}
-						// openChest
 						else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
-
+							pickChest(game);
 							action = true;
-
 						}
 					}
 					roundFinished = true;
 				} else {
 					System.out.println("Vous êtes au fond, vous remontez.");
-
-					// moveUp
 					moveUp(game);
 					roundFinished = true;
 				}
@@ -142,20 +105,17 @@ public class Player {
 							"Il y a un coffre dans ce niveau, vous pouvez remonter, descendre ou prendre le coffre.");
 					boolean action = false;
 					while (action == false) {
-						// moveDown
 						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
 							moveDown(game);
 							action = true;
 						}
-						// moveUp
 						else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
 							moveUp(game);
 							action = true;
 						}
-
-						// openChest
 						else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
-
+							pickChest(game);
+							action = true;
 						}
 					}
 					roundFinished = true;
@@ -163,12 +123,10 @@ public class Player {
 					System.out.println("Ce niveau est vide, vous pouvez remonter ou descendre.");
 					boolean action = false;
 					while (action == false) {
-						// moveDown
 						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
 							moveDown(game);
 							action = true;
 						}
-						// moveUp
 						else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
 							moveUp(game);
 							action = true;
@@ -178,55 +136,79 @@ public class Player {
 				}
 			}
 		}
+		/*try {
+
+			//sleep 5 seconds
+			Thread.sleep(100);
+
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
+		
 	}
-	
-	public void moveDown (Game game) {
-		if (playerNumberCave == playerNumberLevel) {
-			playerNumberCave++;
+
+	public void moveDown(Game game) {
+		if (playerNumberLevel+1 == game.getCaveNbLevel(playerNumberCave)) {
+			playerNumberCave ++;
 			playerNumberLevel = 0;
 		} else {
-			playerNumberLevel++;
+			playerNumberLevel ++;
+		}
+		System.out.println("Vous descendez.");
+		while (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
 		}
 	}
-	public void moveUp (Game game) {
+
+	public void moveUp(Game game) {
 		if (playerNumberLevel == 0) {
 			playerNumberCave--;
-			playerNumberLevel = game.getCaveNbLevel(playerNumberCave);
+			playerNumberLevel = game.getCaveNbLevel(playerNumberCave)-1;
 		} else {
 			playerNumberLevel--;
 		}
-	}
-	
-	
-	
-	
-	
-	public void playerPrint() {
-		int playerNumberPrint = playerNumber + 1;
-		if (playerNumberCave == 0 && playerNumberLevel == 0) {
-			System.out.println("Le joueur "+ playerNumberPrint +" se trouve à la surface." );
-		} else {
-			System.out.println("Le joueur "+ playerNumberPrint +" se trouve dans le niveau "+ playerNumberLevel +" de la cave "+ playerNumberCave +".");
+		System.out.println("Vous remontez.");
+		while (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
 		}
 	}
 
+	public void pickChest(Game game) {
+		Chests.add(game.getChestCaveLevel(playerNumberCave, playerNumberLevel).get(0));
+		game.getChestCaveLevel(playerNumberCave, playerNumberLevel).remove(0);
+		System.out.println("Vous prenez un coffre.");
+		while (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
+		}
+	}
+	public void putChestsPlayerInLevel(Level level) {
+		while (Chests.isEmpty() == false) {
+			level.getChests().add(Chests.remove(0));
+		}
+	}
+	public void playerScore () {
+		while (Chests.isEmpty() == false) {
+			TreasureCount = TreasureCount + Chests.get(0).getTreasure();
+			Chests.remove(0);
+		}
+	}
+	public void initPlayer (Game game) {
+		if (playerNumberCave == 0 && playerNumberLevel ==0) {
+			playerScore ();
+		} else {
+			putChestsPlayerInLevel( game.getCaveLevel(game.getNbCave(), game.getCaveNbLevel(game.getNbCave())-1));
+			playerNumberCave = 0;
+			playerNumberLevel = 0;
+			
+		}
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	public void playerPrint() {
+		int playerNumberPrint = playerNumber + 1;
+		if (playerNumberCave == 0 && playerNumberLevel == 0) {
+			System.out.println("Le joueur " + playerNumberPrint + " se trouve à la surface.");
+		} else {
+			System.out.println("Le joueur " + playerNumberPrint + " se trouve dans le niveau " + playerNumberLevel
+					+ " de la cave " + playerNumberCave + ".");
+		}
+	}
 
 }
-
