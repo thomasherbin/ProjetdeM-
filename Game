@@ -1,12 +1,15 @@
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import edu.princeton.cs.introcs.StdDraw;
 
 public class Game {
 	private ArrayList<Player> Players;
 	private int nbPlayers;
-	private Stage CurrentStage;
+	private Stage currentStage;
 	private static Cave[] Caves;
 
-	public Game(int nbPlayers, int nbCave) {
+	public Game(int nbPlayers, int nbCave, int nbStage) {
 		this.nbPlayers = nbPlayers;
 		System.out.println("Il y a " + nbPlayers + " joueurs dans le jeu.");
 		Caves = new Cave[++nbCave];
@@ -19,6 +22,87 @@ public class Game {
 			Caves[i] = new Cave(i);
 			// Caves[i].printCave();
 		}
+		game(nbStage);
+
+	}
+
+	public void game(int nbStage) {
+		currentStage = new Stage();
+		int stageNumber = 0;
+		int oxygen = getGameNbLevel() * 2;
+		currentStage.setStageNumber(stageNumber);
+		System.out.println(" ");
+		System.out.println("PHASE " + currentStage.getStageNumber());
+		int[] getRandomOrder = getRandomOrder(nbPlayers);
+		while (currentStage.getStageNumber() < nbStage) {
+			deleteLevel();
+			currentStage.setOxygen(oxygen);
+			System.out.println(currentStage.getOxygen());
+			for (int i = 0; i < Players.size(); i++) {
+				getPlayer(i).initPlayer(this);
+			}
+			gamePrint();
+			int round = 0;
+			while (currentStage.getOxygen() > 0) {
+				System.out.println(" ");
+				System.out.println("TOUR " + round);
+				System.out.println("Niveau d'oxygene : "+currentStage.getOxygen());
+				//System.out.println(getPlayer(0).getTreasureCount());
+				currentStage.setOxygen(Round(getRandomOrder, currentStage.getOxygen()));
+				round++;
+
+			}
+			System.out.println("L'oxygène est épuisé");
+			currentStage.setStageNumber(++stageNumber);
+			System.out.println(" ");
+			System.out.println(" ");
+			if (currentStage.getStageNumber() == 3) {
+			} else {
+				System.out.println("PHASE " + currentStage.getStageNumber());
+			}
+		}
+		for (int i = 0; i < Players.size(); i++) {
+			getPlayer(i).playerScore();
+		}
+		System.out.println("La partie est fini !");
+		System.out.println("C'est le joueur "+ findWinner().getPlayerNumber()+ " qui a gagné !");
+		reLauchGame();
+		// gamePrint();
+	}
+	public Player findWinner() {
+		Player playerBuffer = new Player (10);
+		for (int i = 0; i < Players.size(); i++) {
+			if (getPlayer(i).getTreasureCount() > playerBuffer.getTreasureCount()) {
+				playerBuffer = getPlayer(i);
+			}
+		}
+		return playerBuffer;
+	}
+
+	public void reLauchGame() {
+		System.out.println("Voulez vous recommencez une partie ?");
+		System.out.println("flèche droite : oui  || flèche gauche : non");
+		boolean action = false;
+		while (action == false) {
+			if (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
+				lauchGame();
+				while (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
+				}
+				action = true;
+			} else if (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)){
+				while (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)) {
+				}
+				action = true;
+			}
+		}
+
+	}
+
+	public static void lauchGame() {
+		int nbPlayers = 1;
+		int nbCave = 3;
+		int nbStage = 3;
+		new Game(nbPlayers, nbCave, nbStage);
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -34,11 +118,7 @@ public class Game {
 	}
 
 	public int getNbCave() {
-		return Caves.length;
-	}
-
-	public Stage getCurrentStage() {
-		return CurrentStage;
+		return Caves.length - 1;
 	}
 
 	public Cave[] getCaves() {
@@ -53,29 +133,90 @@ public class Game {
 		return getCave(i).getLevel();
 	}
 
+	public int getGameNbLevel() {
+		int GameNbLevel = 0;
+		for (int i = 0; i < getNbCave(); i++) {
+			GameNbLevel = GameNbLevel + getCaveNbLevel(i);
+		}
+		return GameNbLevel;
+	}
+
 	public static Level getCaveLevel(int i, int k) {
 		return getCave(i).getLevels().get(k);
 	}
 
-	public static void lauchGame() {
-		int nbPlayers = 2;
-		int nbCave = 3;
-		Game game = new Game(nbPlayers, nbCave);
-		game.gamePrint();
-		int playerBegin = (int) (Math.random() * nbPlayers);
-		// int playerBegin = 1;
-		int playerBeginPrint = playerBegin + 1;
-		System.out.println("C'est au joueur " + playerBeginPrint + " de commencer !");
-		game.getPlayer(playerBegin).playerPrint();
-		game.getPlayer(playerBegin).getNextMove(game);
-		game.getPlayer(playerBegin).playerPrint();
+	public ArrayList<Chest> getChestCaveLevel(int i, int k) {
+		return getCaveLevel(i, k).getChests();
 	}
 
 	public boolean chestTestPosition(int caveNumber, int levelNumber) {
-		if (this.getCaveLevel(caveNumber, levelNumber).chestTestLevel()) {
+		if (this.getCaveLevel(caveNumber, levelNumber).chestsTestLevel()) {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public int[] getRandomOrder(int nbPlayer) {
+		ArrayList<Integer> IntergerList = new ArrayList<>();
+		int[] randomOrder = new int[nbPlayer];
+		for (int i = 0; i < nbPlayer; i++) {
+			IntergerList.add(i);
+		}
+		for (int i = 0; i < nbPlayer; i++) {
+			int randomNumber = IntergerList.remove((int) (Math.random() * IntergerList.size()));
+			randomOrder[i] = randomNumber;
+		}
+		return randomOrder;
+	}
+
+	public int Round(int[] getRandomOrder, int currentOxygen) {
+		for (int i = 0; i < getRandomOrder.length; i++) {
+			if (currentOxygen < 0) {
+				return 0;
+			} else {
+				currentOxygen = RoundPlayer(getPlayer(getRandomOrder[i]), currentOxygen);
+			}
+		}
+		return currentOxygen;
+	}
+
+	public int RoundPlayer(Player player, int currentOxygen) {
+		int playerNumberPrint = player.getPlayerNumber() + 1;
+		System.out.println("C'est au joueur " + playerNumberPrint + " de jouer !");
+		player.playerPrint();
+		int playerCaveb = player.getPlayerNumberCave();
+		int playerLevelb = player.getPlayerNumberLevel();
+		player.getNextMove(this);
+		int playerCavea = player.getPlayerNumberCave();
+		int playerLevela = player.getPlayerNumberLevel();
+		if (playerCaveb == playerCavea && playerLevelb == playerLevela) {
+			System.out.println("Vous êtes rester au même niveau, vous perdez donc " + 1 + " d'oxygene.");
+			currentOxygen = currentOxygen - 1;
+		} else {
+			int lostOxygen = 1 + player.getChestsSize();
+			System.out.println(
+					"Vous avez " + player.getChestsSize() + " coffres, vous perdez donc " + lostOxygen + " d'oxygene.");
+			currentOxygen = currentOxygen - lostOxygen;
+		}
+		player.playerPrint();
+		return currentOxygen;
+
+	}
+	public void deleteLevel() {
+		for (int i=1 ; i<getNbCave()+1; i++) {
+			int size = getCaveNbLevel(i);
+			int k=0;
+			while (k<size) {
+				if (getChestCaveLevel(i, k).isEmpty()) {
+					getCave(i).getLevels().remove(k);
+					size --;
+				} else {
+					k++;
+				}
+			}
+			getCave(i).setLevel(size);
+			
 		}
 	}
 
@@ -86,6 +227,11 @@ public class Game {
 		for (int i = 0; i < Caves.length; i++) {
 			Caves[i].printCave();
 		}
+		System.out.println("Il y a " + getChestCaveLevel(getNbCave(), getCaveNbLevel(getNbCave()) - 1).size()
+				+ " coffres dans le dernier niveau.");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
 	}
 
 }
