@@ -5,21 +5,21 @@ public class Level {
 	public ArrayList<Chest> Chests;
 	public int levelNumber;
 
-	public Level(int levelNumber, int nbChests) {
+	public Level(int levelNumber, int nbChests, int caveNumber) {
 		super();
 		this.levelNumber = levelNumber;
 		Chests = new ArrayList<>();
 		for (int i = 0; i < nbChests; i++) {
-			Chests.add(new Chest());
+			Chests.add(new Chest(caveNumber));
 		}
 	}
 
-	public void addChest() {
+	public void addChest(int caveNumber) {
 		this.Chests = new ArrayList<>();
-		this.Chests.add(new Chest());
+		this.Chests.add(new Chest(caveNumber));
 	}
 
-	public List<Chest> getChests() {
+	public ArrayList<Chest> getChests() {
 		return Chests;
 	}
 
@@ -34,12 +34,13 @@ public class Level {
 			return false;
 		}
 	}
+	
 
-	public boolean chestTestLevel() {
+	public boolean chestsTestLevel() {
 		if (Chests.isEmpty()) {
-			return true;
-		} else {
 			return false;
+		} else {
+			return true;
 		}
 	}
 
