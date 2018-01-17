@@ -1,0 +1,85 @@
+import java.awt.event.KeyEvent;
+
+import edu.princeton.cs.introcs.StdDraw;
+
+public class Human extends Player{
+
+	public Human(int playerNumber) {
+		super(playerNumber);
+		// TODO Auto-generated constructor stub
+	}
+	public void getNextMove(Game game) {
+		boolean roundFinished = false;
+		while (roundFinished != true) {
+			if (playerNumberCave == 0) {
+				playerScore();
+				System.out.println("Vous êtes à la surface, vous plongez.");
+				moveDown(game);
+				roundFinished = true;
+			} else if (playerNumberCave == game.getNbCave()
+					&& playerNumberLevel == game.getCaveNbLevel(game.getNbCave()) - 1) {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println(
+							"Vous êtes au fond et il y a un coffre, vous pouvez remonter ou prendre le coffre.");
+					boolean action = false;
+					while (action == false) {
+						if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+						} else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
+							pickChest(game);
+							action = true;
+						}
+					}
+					roundFinished = true;
+				} else {
+					System.out.println("Vous êtes au fond, vous remontez.");
+					moveUp(game);
+					roundFinished = true;
+				}
+			} else {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					System.out.println(
+							"Il y a un coffre dans ce niveau, vous pouvez remonter, descendre ou prendre le coffre.");
+					boolean action = false;
+					while (action == false) {
+						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
+							moveDown(game);
+							action = true;
+						} else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+						} else if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
+							pickChest(game);
+							action = true;
+						}
+					}
+					roundFinished = true;
+				} else {
+					System.out.println("Ce niveau est vide, vous pouvez remonter ou descendre.");
+					boolean action = false;
+					while (action == false) {
+						if (StdDraw.isKeyPressed(KeyEvent.VK_DOWN)) {
+							moveDown(game);
+							action = true;
+						} else if (StdDraw.isKeyPressed(KeyEvent.VK_UP)) {
+							moveUp(game);
+							action = true;
+						}
+					}
+					roundFinished = true;
+				}
+			}
+		}
+		/*
+		 * try {
+		 * 
+		 * //sleep 5 seconds Thread.sleep(100);
+		 * 
+		 * 
+		 * } catch (InterruptedException e) { e.printStackTrace(); }
+		 */
+
+	}
+
+}
