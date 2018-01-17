@@ -1,0 +1,27 @@
+public class Computer extends Player {
+
+	public Computer(int playerNumber) {
+		super(playerNumber);
+		// TODO Auto-generated constructor stub
+	}
+	public void getNextMove(Game game) {
+		while (true) {
+			while (Chests.isEmpty()) {
+				if (game.chestTestPosition(playerNumberCave, playerNumberLevel)) {
+					pickChest(game);
+				} else {
+					moveDown(game);
+				}
+			}
+			while (Chests.isEmpty() == false) {
+				if (playerNumberCave == 0) {
+					playerScore();
+					moveDown(game);
+				} else {
+					moveUp(game);
+				}
+			}
+		}
+	}
+
+}
