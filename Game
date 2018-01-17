@@ -18,7 +18,7 @@ public class Game {
 			Players.add(new Human(0));
 			Players.add(new Human(1));
 		} else {
-			Players.add(new Computer(0));
+			Players.add(new Human(0));
 			Players.add(new Computer(1));
 		}
 		for (int i = 0; i < nbCave; i++) {
@@ -37,6 +37,11 @@ public class Game {
 		System.out.println("PHASE " + currentStage.getStageNumber());
 		while (currentStage.getStageNumber() < nbStage) {
 			Stage(stageNumber);
+			currentStage.setStageNumber(++stageNumber);
+			if (currentStage.getStageNumber() == 3) {
+			} else {
+				System.out.println("PHASE " + currentStage.getStageNumber());
+			}
 		}
 		for (int i = 0; i < Players.size(); i++) {
 			getPlayer(i).playerScore();
@@ -63,13 +68,10 @@ public class Game {
 			round++;
 		}
 		System.out.println("L'oxygène est épuisé");
-		currentStage.setStageNumber(++stageNumber);
 		System.out.println(" ");
 		System.out.println(" ");
-		if (currentStage.getStageNumber() == 3) {
-		} else {
-			System.out.println("PHASE " + currentStage.getStageNumber());
-		}
+		
+		
 	}
 
 	public void Round(int round, int[] getRandomOrder) {
