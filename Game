@@ -9,14 +9,17 @@ public class Game {
 	private Stage currentStage;
 	private static Cave[] Caves;
 
-	public Game(int nbPlayers, int nbCave, int nbStage) {
-		this.nbPlayers = nbPlayers;
+	public Game(boolean IAplayer, int nbCave, int nbStage) {
+		this.nbPlayers = 2;
 		System.out.println("Il y a " + nbPlayers + " joueurs dans le jeu.");
 		Caves = new Cave[++nbCave];
 		Players = new ArrayList<>();
-		for (int i = 0; i < nbPlayers; i++) {
-			Players.add(new Player(i));
-			// Players.get(i).playerPrint();
+		if (IAplayer) {
+			Players.add(new Human(0));
+			Players.add(new Human(1));
+		} else {
+			Players.add(new Computer(0));
+			Players.add(new Computer(1));
 		}
 		for (int i = 0; i < nbCave; i++) {
 			Caves[i] = new Cave(i);
@@ -29,67 +32,77 @@ public class Game {
 	public void game(int nbStage) {
 		currentStage = new Stage();
 		int stageNumber = 0;
-		int oxygen = getGameNbLevel() * 2;
 		currentStage.setStageNumber(stageNumber);
 		System.out.println(" ");
 		System.out.println("PHASE " + currentStage.getStageNumber());
-		int[] getRandomOrder = getRandomOrder(nbPlayers);
 		while (currentStage.getStageNumber() < nbStage) {
-			deleteLevel();
-			currentStage.setOxygen(oxygen);
-			System.out.println(currentStage.getOxygen());
-			for (int i = 0; i < Players.size(); i++) {
-				getPlayer(i).initPlayer(this);
-			}
-			gamePrint();
-			int round = 0;
-			while (currentStage.getOxygen() > 0) {
-				System.out.println(" ");
-				System.out.println("TOUR " + round);
-				System.out.println("Niveau d'oxygene : "+currentStage.getOxygen());
-				//System.out.println(getPlayer(0).getTreasureCount());
-				currentStage.setOxygen(Round(getRandomOrder, currentStage.getOxygen()));
-				round++;
-
-			}
-			System.out.println("L'oxygène est épuisé");
-			currentStage.setStageNumber(++stageNumber);
-			System.out.println(" ");
-			System.out.println(" ");
-			if (currentStage.getStageNumber() == 3) {
-			} else {
-				System.out.println("PHASE " + currentStage.getStageNumber());
-			}
+			Stage(stageNumber);
 		}
 		for (int i = 0; i < Players.size(); i++) {
 			getPlayer(i).playerScore();
 		}
 		System.out.println("La partie est fini !");
-		System.out.println("C'est le joueur "+ findWinner().getPlayerNumber()+ " qui a gagné !");
-		reLauchGame();
+		System.out.println("C'est le joueur " + findWinner() + " qui a gagné !");
+		reLaunchGame();
 		// gamePrint();
-	}
-	public Player findWinner() {
-		Player playerBuffer = new Player (10);
-		for (int i = 0; i < Players.size(); i++) {
-			if (getPlayer(i).getTreasureCount() > playerBuffer.getTreasureCount()) {
-				playerBuffer = getPlayer(i);
-			}
-		}
-		return playerBuffer;
+
 	}
 
-	public void reLauchGame() {
+	public void Stage(int stageNumber) {
+		deleteLevel();
+		currentStage.setOxygen(getGameNbLevel() * nbPlayers);
+		for (int i = 0; i < Players.size(); i++) {
+			getPlayer(i).initPlayer(this);
+		}
+		gamePrint();
+		int round = 0;
+		int[] getRandomOrder = getRandomOrder(nbPlayers);
+		while (currentStage.getOxygen() > 0) {
+			getRandomOrder = twoPlayerInSameLevel(getRandomOrder);
+			Round(round, getRandomOrder);
+			round++;
+		}
+		System.out.println("L'oxygène est épuisé");
+		currentStage.setStageNumber(++stageNumber);
+		System.out.println(" ");
+		System.out.println(" ");
+		if (currentStage.getStageNumber() == 3) {
+		} else {
+			System.out.println("PHASE " + currentStage.getStageNumber());
+		}
+	}
+
+	public void Round(int round, int[] getRandomOrder) {
+		System.out.println(" ");
+		System.out.println("TOUR " + round);
+		System.out.println("Niveau d'oxygene : " + currentStage.getOxygen());
+		currentStage.setOxygen(Round(getRandomOrder, currentStage.getOxygen()));
+
+	}
+
+	public int findWinner() {
+		int playerBufferNumber = 100;
+		int playerBufferTreasure = -1;
+		for (int i = 0; i < Players.size(); i++) {
+			if (getPlayer(i).getTreasureCount() > playerBufferTreasure) {
+				playerBufferNumber = getPlayer(i).getPlayerNumber();
+				playerBufferTreasure = getPlayer(i).getTreasureCount();
+			}
+		}
+		return playerBufferNumber;
+	}
+
+	public void reLaunchGame() {
 		System.out.println("Voulez vous recommencez une partie ?");
 		System.out.println("flèche droite : oui  || flèche gauche : non");
 		boolean action = false;
 		while (action == false) {
 			if (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
-				lauchGame();
+				launchGame();
 				while (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
 				}
 				action = true;
-			} else if (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)){
+			} else if (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)) {
 				while (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)) {
 				}
 				action = true;
@@ -98,11 +111,25 @@ public class Game {
 
 	}
 
-	public static void lauchGame() {
-		int nbPlayers = 1;
+	public static void launchGame() {
 		int nbCave = 3;
 		int nbStage = 3;
-		new Game(nbPlayers, nbCave, nbStage);
+		System.out.println("Humain ou ordi ?");
+		System.out.println("flèche gauche : Humain  || flèche droite : ordi");
+		boolean action = false;
+		while (action == false) {
+			if (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
+				new Game(false, nbCave, nbStage);
+				while (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT)) {
+				}
+				action = true;
+			} else if (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)) {
+				new Game(true, nbCave, nbStage);
+				while (StdDraw.isKeyPressed(KeyEvent.VK_LEFT)) {
+				}
+				action = true;
+			}
+		}
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -135,7 +162,7 @@ public class Game {
 
 	public int getGameNbLevel() {
 		int GameNbLevel = 0;
-		for (int i = 0; i < getNbCave(); i++) {
+		for (int i = 0; i < getNbCave() + 1; i++) {
 			GameNbLevel = GameNbLevel + getCaveNbLevel(i);
 		}
 		return GameNbLevel;
@@ -168,6 +195,27 @@ public class Game {
 			randomOrder[i] = randomNumber;
 		}
 		return randomOrder;
+	}
+
+	public boolean playerSameLevel(int playerNumber1, int PlayerNumber2) {
+		if (Players.get(playerNumber1).getPlayerNumberCave() == Players.get(PlayerNumber2).getPlayerNumberCave()
+				&& Players.get(playerNumber1).getPlayerNumberLevel() == Players.get(PlayerNumber2)
+						.getPlayerNumberLevel()) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public int[] twoPlayerInSameLevel(int[] getRandomOrder) {
+		if (playerSameLevel(0, 1)) {
+			getRandomOrder = getRandomOrder(nbPlayers);
+			return getRandomOrder;
+		} else {
+			return getRandomOrder;
+		}
+
 	}
 
 	public int Round(int[] getRandomOrder, int currentOxygen) {
@@ -203,20 +251,21 @@ public class Game {
 		return currentOxygen;
 
 	}
+
 	public void deleteLevel() {
-		for (int i=1 ; i<getNbCave()+1; i++) {
+		for (int i = 1; i < getNbCave() + 1; i++) {
 			int size = getCaveNbLevel(i);
-			int k=0;
-			while (k<size) {
+			int k = 0;
+			while (k < size) {
 				if (getChestCaveLevel(i, k).isEmpty()) {
 					getCave(i).getLevels().remove(k);
-					size --;
+					size--;
 				} else {
 					k++;
 				}
 			}
 			getCave(i).setLevel(size);
-			
+
 		}
 	}
 
