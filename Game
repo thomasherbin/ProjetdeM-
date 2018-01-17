@@ -87,6 +87,8 @@ public class Game {
 		int playerBufferTreasure = -1;
 		for (int i = 0; i < Players.size(); i++) {
 			if (getPlayer(i).getTreasureCount() > playerBufferTreasure) {
+				int playerPrint = getPlayer(i).getPlayerNumber() +1;
+				System.out.println("Le joueur "+playerPrint +" a "+getPlayer(i).getTreasureCount() +" trésors.");
 				playerBufferNumber = getPlayer(i).getPlayerNumber();
 				playerBufferTreasure = getPlayer(i).getTreasureCount();
 			}
