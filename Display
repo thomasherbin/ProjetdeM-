@@ -1,0 +1,145 @@
+import edu.princeton.cs.introcs.StdDraw;
+
+public class Display {
+
+	private final static double WIN_WIDTH = 340.0;
+	private final static double WIN_HEIGHT = 340.0;
+	private final static int FPS = 1000;
+
+	public static double getWIN_WIDTH() {
+		return WIN_WIDTH;
+	}
+
+	public static double getWIN_HEIGHT() {
+		return WIN_HEIGHT;
+	}
+
+	public static void set() {
+		StdDraw.setCanvasSize(800, 800);
+		StdDraw.setXscale(0, WIN_WIDTH);
+		StdDraw.setYscale(0, WIN_HEIGHT);
+	}
+
+	public static void draw() {
+		StdDraw.setPenColor(StdDraw.WHITE);
+		StdDraw.clear(StdDraw.BLACK);
+		StdDraw.picture(WIN_WIDTH / 2, WIN_HEIGHT / 2,
+				"C:\\Users\\Clément\\Desktop\\Projet\\Skins\\Background\\ocean.jpg", WIN_WIDTH, WIN_HEIGHT);
+
+		StdDraw.show(1000 / FPS);
+	}
+
+	public static void drawHud() {
+		StdDraw.text(WIN_WIDTH / 2, WIN_HEIGHT / 2, "Use the arrow keys");
+		StdDraw.setPenColor(StdDraw.WHITE);
+		StdDraw.filledRectangle(WIN_WIDTH * 50 / 100, WIN_HEIGHT, WIN_WIDTH * 50 / 100, WIN_HEIGHT * 12 / 100);
+		for (int i = 1; i < 205; i++) {
+			StdDraw.setPenColor(51 + i, 51, 255);
+			StdDraw.filledRectangle(WIN_WIDTH * i / 410, WIN_HEIGHT * 99 / 100, WIN_WIDTH * 0.58 / 100,
+					WIN_HEIGHT * 11 / 100);
+			StdDraw.setPenColor(255, 51, 255 - i);
+			StdDraw.filledRectangle(WIN_WIDTH * (205 + i) / 410, WIN_HEIGHT * 99 / 100, WIN_WIDTH * 0.58 / 100,
+					WIN_HEIGHT * 11 / 100);
+		}
+		StdDraw.picture(WIN_WIDTH * 6 / 100, WIN_HEIGHT * 95.5 / 100, "pictures\\MagicarpStatic2.png", WIN_HEIGHT / 10,
+				WIN_WIDTH / 10);
+		StdDraw.picture(WIN_WIDTH * 94 / 100, WIN_HEIGHT * 95.5 / 100, "pictures\\TravoltaStatic.png", WIN_HEIGHT / 10,
+				WIN_WIDTH / 10);
+		StdDraw.setPenColor();
+		StdDraw.setPenRadius(0.01);
+		StdDraw.rectangle(WIN_WIDTH / 4, WIN_HEIGHT * 94 / 100, WIN_WIDTH * 25 / 100, WIN_HEIGHT * 6 / 100);
+		StdDraw.rectangle(WIN_WIDTH * 3 / 4, WIN_HEIGHT * 94 / 100, WIN_WIDTH * 25 / 100, WIN_HEIGHT * 6 / 100);
+		StdDraw.setPenRadius();
+
+		StdDraw.text(WIN_WIDTH / 4, WIN_HEIGHT * 98 / 100, "Player1");
+		StdDraw.text(WIN_WIDTH / 4, WIN_HEIGHT * 96 / 100, "Score : " + Game.getPlayer(0).getTreasureCount());
+		StdDraw.text(WIN_WIDTH / 6, WIN_HEIGHT * 94 / 100, "Cave " + Game.getPlayer(0).getPlayerNumberCave());
+		StdDraw.text(WIN_WIDTH * 2 / 6, WIN_HEIGHT * 94 / 100, "Level " + Game.getPlayer(0).getPlayerNumberLevel());
+
+		StdDraw.text(WIN_WIDTH * 3 / 4, WIN_HEIGHT * 98 / 100, "Player2");
+		StdDraw.text(WIN_WIDTH * 3 / 4, WIN_HEIGHT * 96 / 100, "Score : " + Game.getPlayer(1).getTreasureCount());
+		StdDraw.text(WIN_WIDTH * 4 / 6, WIN_HEIGHT * 94 / 100, "Cave " + Game.getPlayer(1).getPlayerNumberCave());
+		StdDraw.text(WIN_WIDTH * 5 / 6, WIN_HEIGHT * 94 / 100, "Level " + Game.getPlayer(1).getPlayerNumberLevel());
+
+		StdDraw.show(1000 / FPS);
+
+	}
+
+	public static void drawOxygen() {
+		StdDraw.setPenColor(50, 200, 200);
+		StdDraw.filledRectangle(WIN_WIDTH * 50 / 100, WIN_HEIGHT * 89 / 100, WIN_WIDTH * 44 / 100,
+				WIN_HEIGHT * 2 / 100);
+		StdDraw.setPenColor();
+		StdDraw.setPenRadius(0.005);
+		StdDraw.rectangle(WIN_WIDTH * 50 / 100, WIN_HEIGHT * 89 / 100, WIN_WIDTH * 44.1 / 100, WIN_HEIGHT * 2.1 / 100);
+		StdDraw.text(WIN_WIDTH * 50 / 100, WIN_HEIGHT * 89 / 100,
+				"Remaining Oxygen : " + Game.getcurrentStage().getOxygen());
+		StdDraw.show(1000 / FPS);
+	}
+
+	public static void drawLevels() {
+
+		System.out.println("lvl=" + Game.getGameNbLevel());
+
+		for (int i = -1; i < Game.getGameNbLevel() + 1; i++) {
+			if (i == Game.getGameNbLevel()) {
+				StdDraw.picture(WIN_WIDTH * 50 / 100, WIN_HEIGHT * 84 / 100, "pictures\\river2.jpg", WIN_WIDTH,
+						WIN_HEIGHT * 6.9 / 100);
+
+			}
+
+			else if (i < Game.getGameNbLevel() && i > Game.getGameNbLevel() - Game.getCave(1).getLevel() - 1) {
+				StdDraw.picture(WIN_WIDTH * 50 / 100,
+						(WIN_HEIGHT * (84 * (i + 2)) / (100 * (Game.getGameNbLevel() + 2)))
+								- WIN_HEIGHT * 84 / (200 * (Game.getGameNbLevel() + 2)),
+						"pictures\\lvl1.png", WIN_WIDTH, WIN_HEIGHT * 84 / (100 * (Game.getGameNbLevel() + 2)));
+			}
+
+			else if (i < Game.getGameNbLevel() - Game.getCave(1).getLevel() + 1
+					&& i > Game.getGameNbLevel() - Game.getCave(1).getLevel() - Game.getCave(2).getLevel() - 1) {
+				StdDraw.picture(WIN_WIDTH * 50 / 100,
+						(WIN_HEIGHT * (84 * (i + 2)) / (100 * (Game.getGameNbLevel() + 2)))
+								- WIN_HEIGHT * 84 / (200 * (Game.getGameNbLevel() + 2)),
+						"pictures\\lvl2.png", WIN_WIDTH, WIN_HEIGHT * 84 / (100 * Game.getGameNbLevel() + 2));
+
+			}
+
+			else if (i < Game.getGameNbLevel() - Game.getCave(1).getLevel() - Game.getCave(2).getLevel()) {
+				StdDraw.picture(WIN_WIDTH * 50 / 100,
+						(WIN_HEIGHT * (84 * (i + 2)) / (100 * (Game.getGameNbLevel() + 2)))
+								- WIN_HEIGHT * 84 / (200 * (Game.getGameNbLevel() + 2)),
+						"pictures\\lvl3.png", WIN_WIDTH, WIN_HEIGHT * 84 / (100 * (Game.getGameNbLevel() + 2)));
+
+			}
+
+		}
+		StdDraw.show(1000 / FPS);
+	}
+
+	public static void drawPlayer(Player player) {
+
+		if (player.getPlayerNumber() == 0) {
+			StdDraw.picture(player.getxpos(), player.getypos(), "pictures\\MagicarpStatic2.png", WIN_WIDTH * 8 / 100,
+					WIN_HEIGHT * 8 / 100);
+
+		} else if (player.getPlayerNumber() == 1) {
+			StdDraw.picture(player.getxpos(), player.getypos(), "pictures\\TravoltaStatic.png", WIN_WIDTH * 8 / 100,
+					WIN_HEIGHT * 8 / 100);
+		}
+		StdDraw.show(1000 / FPS);
+	}
+
+	public static void drawAll() {
+		StdDraw.clear();
+		Display.drawLevels();
+		Display.drawHud();
+		Display.drawOxygen();
+		Display.drawPlayer(Game.getPlayer(0));
+		Display.drawPlayer(Game.getPlayer(1));
+	}
+
+	public static void drawMenu() {
+
+	}
+
+}
