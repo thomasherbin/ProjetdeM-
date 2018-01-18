@@ -1,6 +1,6 @@
 
-public class Computer extends Player {
-
+public class Computer extends Player{
+	
 	public Computer(int playerNumber) {
 		super(playerNumber);
 		// TODO Auto-generated constructor stub
@@ -32,12 +32,19 @@ public class Computer extends Player {
 			break;
 		case 1:
 			moveDown(game);
+			setypos((Display.getWIN_HEIGHT() * (84 * (Game.getGameNbLevel() - absLvl+2))
+					/ (100 * (Game.getGameNbLevel()+2)))
+					- Display.getWIN_HEIGHT() * 84 / (200 * (Game.getGameNbLevel()+2)));
 			break;
 		case 2:
 			moveUp(game);
+			setypos((Display.getWIN_HEIGHT() * (84 * (Game.getGameNbLevel() - absLvl+2))
+					/ (100 * (Game.getGameNbLevel()+2)))
+					- Display.getWIN_HEIGHT() * 84 / (200 * (Game.getGameNbLevel()+2)));
 			break;
 		}
 		
 	}
 
 }
+
