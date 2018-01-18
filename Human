@@ -2,8 +2,7 @@ import java.awt.event.KeyEvent;
 
 import edu.princeton.cs.introcs.StdDraw;
 
-public class Human extends Player{
-
+public class Human extends Player {
 	public Human(int playerNumber) {
 		super(playerNumber);
 		// TODO Auto-generated constructor stub
@@ -70,7 +69,21 @@ public class Human extends Player{
 					roundFinished = true;
 				}
 			}
-		}
+			setypos((Display.getWIN_HEIGHT() * (84 * (Game.getGameNbLevel() - absLvl+2))
+					/ (100 * (Game.getGameNbLevel()+2)))
+					- Display.getWIN_HEIGHT() * 84 / (200 * (Game.getGameNbLevel()+2)));
+			StdDraw.clear();
+			Display.drawLevels();
+			Display.drawHud();
+			Display.drawOxygen();
+			if (getPlayerNumber() == 0) {
+				Display.drawPlayer(Game.getPlayer(1));
+				Display.drawPlayer(Game.getPlayer(getPlayerNumber()));
+
+			} else if (getPlayerNumber() == 1) {
+				Display.drawPlayer(Game.getPlayer(0));
+				Display.drawPlayer(Game.getPlayer(getPlayerNumber()));
+			}
 		/*
 		 * try {
 		 * 
@@ -82,4 +95,5 @@ public class Human extends Player{
 
 	}
 
+}
 }
